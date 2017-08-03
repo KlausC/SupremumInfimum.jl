@@ -21,7 +21,7 @@ git:
 #addons:
 #  apt: # apt-get for linux
 #    packages:
-#    - gfortran
+#     - gfortran
 #before_script: # homebrew for mac
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
