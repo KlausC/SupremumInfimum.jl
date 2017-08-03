@@ -1,5 +1,12 @@
+"""
+Implement supremum and infimum functions as extensions of maximum and minimum.
+Cover the corner case of empty collections and partially ordered types. 
+"""
+
 module SupremumInfimum
 
-# package code goes here
+export supremum, infimum, leaf_type
+
+include("supinf.jl")
 
 end # module
