@@ -5,7 +5,7 @@ Cover the corner case of empty collections and partially ordered types.
 
 module SupremumInfimum
 
-export supremum, infimum, leaf_type
+export supremum, infimum, sup, inf, leaf_type
 
 include("supinf.jl")
 

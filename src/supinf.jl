@@ -3,8 +3,8 @@
 import Base:  Callable, mr_empty, union, intersect
 
 for (supremum, infimum, max, typemin, union, ubound, lbound) in
-    ((:supremum,:infimum,:max,:typemin,:union,     "least upper bound",    "lower bound"),
-     (:infimum,:supremum,:min,:typemax,:intersect, "greatest lower bound", "upper bound"))
+    ((:sup,:inf,:max,:typemin,:union,     "least upper bound",    "lower bound"),
+     (:inf,:sup,:min,:typemax,:intersect, "greatest lower bound", "upper bound"))
 
   global supstring = string(supremum)
   global infstring = string(infimum)
@@ -86,4 +86,8 @@ leaf_type(::Type{T}) where {T<:Signed} = isleaftype(T) ? T : Int64
 leaf_type(::Type{T}) where {T<:Unsigned} = isleaftype(T) ? T : UInt64
 leaf_type(::Type{T}) where {T<:Integer} = isleaftype(T) ? T : Int64
 leaf_type(::Type{T}) where {T<:Real} = isleaftype(T) ? T : Float64
+
+# aliases for the main functions
+const supremum = sup
+const infimum = inf
 
