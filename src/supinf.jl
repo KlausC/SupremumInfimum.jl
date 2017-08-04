@@ -82,9 +82,9 @@ Return a default concrete subtype of argument.
 leaf_type(::Type{T}) where {T<:AbstractSet{U}} where {U<:Any} = isleaftype(T) ? T : Set{U} 
 leaf_type(::Type{T}) where {T<:AbstractArray{U,N}} where {U,N} = isleaftype(T) ? T : Array{U,N} 
 leaf_type(::Type{BigInt}) = error("lower/upper bounds not (yet) implemented for BigInt")
-leaf_type(::Type{T}) where {T<:Signed} = isleaftype(T) ? T : Int64
-leaf_type(::Type{T}) where {T<:Unsigned} = isleaftype(T) ? T : UInt64
-leaf_type(::Type{T}) where {T<:Integer} = isleaftype(T) ? T : Int64
+leaf_type(::Type{T}) where {T<:Signed} = isleaftype(T) ? T : Int
+leaf_type(::Type{T}) where {T<:Unsigned} = isleaftype(T) ? T : UInt
+leaf_type(::Type{T}) where {T<:Integer} = isleaftype(T) ? T : Int
 leaf_type(::Type{T}) where {T<:Real} = isleaftype(T) ? T : Float64
 
 # aliases for the main functions
