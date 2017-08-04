@@ -67,11 +67,11 @@ Calculate $lbound for all elements of type `T`.
 end # eval begin
 end # for
 
-infimum(::Type{T}) where {T<:AbstractSet} = leaf_type(T)()
-infimum(::Type{String}) = ""
+inf(::Type{T}) where {T<:AbstractSet} = leaf_type(T)()
+inf(::Type{String}) = ""
 
-supremum(::Type{T}) where {T<:AbstractSet} = error("no upper bound defined (yet) for Set")
-supremum(::Type{String}) = error("no upper bound defined for String")
+sup(::Type{T}) where {T<:AbstractSet} = error("no upper bound defined (yet) for Set")
+sup(::Type{String}) = error("no upper bound defined for String")
 
 """
   leaf_type(::Type) -> ::Type
