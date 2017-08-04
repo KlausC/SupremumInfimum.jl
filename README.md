@@ -25,7 +25,7 @@ Generally, `sup` behaves like `max` or `maximum` according to the argument types
 The canonical order of a type is controlled by the functions
 `isless` with `isequal` for total orderings, and `<` with `==` for partial orderings.
 
-A type `T` is considered as having a caninical total ordering, if the methods `isless(::T,::T)`
+A type `T` is considered as having a canonical total ordering, if the methods `isless(::T,::T)`
 is defined. It is assumed, that in this case `<(::T,::T)` is also defined and yields
 identical results. Only exception are floating point types, which make differences for
 negative zeros and NaN.
@@ -36,6 +36,16 @@ is defined, while `isless(::T,::T)` is not.
 A type `T` is ordered, if `<(::T,::T)` is defined, which covers the two cases above.
 If only `isless(::T,::T)` is defined, that is considered an error.
 
-The functions `is_totalyl_ordered`, `is_partially_ordered`, `is_ordered` acount this.
+The functions `is_totally_ordered`, `is_partially_ordered`, `is_ordered` account for this.
+
+usage:
+```jl
+
+julia> using SupremumInfimum
+
+julia> sup(IntSet([1,42]), IntSet([2,42]))
+IntSet([1, 2, 42])
+```
+
 
 
