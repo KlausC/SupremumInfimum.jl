@@ -7,38 +7,53 @@
 This package tries to extend the usability of operation related to the canonical orders of types.
 
 The methods `max`, `maximum`, `min`, and `minimum` are extended in several directions.
-To give a hint on the new features, the names have been set to `sup` and `inf`.
+To give a hint on the new features, the names have been set to `sup`, `supremum`, `inf`, and `infimum`.
 
 1. `sup(a::T, b::T)` returns the least upper bound of `a` and `b` for partial ordering.
 
-2. `sup(itr)` returns the lower bound of `eltype(itr)`, when iterable `itr` is empty.
+2. `supremum(itr)` returns the lower bound of `eltype(itr)`, when iterable `itr` is empty.
 
-3. `sup(f::Union{Function, Type}, itr)` returns the lower bound of the return type of `f`, if that exists.  
+3. `supremum(f::Union{Function, Type}, itr)` returns the lower bound of the return type of `f`, if that exists.  
 
-4. `sup(T::Type)` returns the upper bound of `T`, if that exists.
+4. `supremum(T::Type)` returns the upper bound of `T`, if that exists.
 
 
 Corresponding statements are valid for `inf` in relation to `min` and the opposite bounds.
 
-Generally, `sup` behaves like `max` or `maximum` according to the argument types. For total orders and non-empty collections the return values are identical.
+Generally, `sup` behaves like `max` and `supremum` like `maximum`. For total orders and non-empty collections the return values are identical.
+
+
+### Types and orders
+
+Each Type canonically has exactly one of the order kinds
+
+* totally ordered
+* partially ordered
+* all other unordered types
+
 
 The canonical order of a type is controlled by the functions
-`isless` with `isequal` for total orderings, and `<` with `==` for partial orderings.
+`isless` with `isequal` for total orderings, and `<` and == for partial orderings.
 
-A type `T` is considered as having a canonical total ordering, if the methods `isless(::T,::T)`
+A type `T` is considered as having a canonical total ordering, iff the method `isless(::T,::T)`
 is defined. It is assumed, that in this case `<(::T,::T)` is also defined and yields
 identical results. Only exception are floating point types, which make differences for
 negative zeros and NaN.
 
-A type `T` is considered as having a canonical partial ordering, if the method `<(::T,::T)`
-is defined, while `isless(::T,::T)` is not.
+A type `T` is considered as having a canonical partial ordering, iff the method `<(::T,::T)`
+is defined, while `isless(::T,::T)` is not and `<(::T,::T)` != `(<(::Any,::Any)`. The last
+method is the default implementation, which tries to call `isless` and would fail in this case.
 
-A type `T` is ordered, if `<(::T,::T)` is defined, which covers the two cases above.
-If only `isless(::T,::T)` is defined, that is considered an error.
+A type `T` is ordered, if one of the two cases above applies.
 
 The functions `is_totally_ordered`, `is_partially_ordered`, `is_ordered` account for this.
 
-usage:
+Despite of these definitions, the floating point numbers with `<` and `==` form a total order
+on the real numbers, too. In this case, the `-0.0` and `+0.0` are considered as equivalent,
+while in the canonical case they are considered as two distinct numbers.
+
+### usage
+
 ```jl
 
 julia> using SupremumInfimum
