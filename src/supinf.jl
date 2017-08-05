@@ -2,9 +2,9 @@
 
 import Base:  Callable, mr_empty, union, intersect
 
-for (supremum, infimum, max, typemin, union, ubound, lbound) in
-    ((:sup,:inf,:max,:typemin,:union,     "least upper bound",    "lower bound"),
-     (:inf,:sup,:min,:typemax,:intersect, "greatest lower bound", "upper bound"))
+for (sup, supremum, inf, infimum, max, typemin, union, ubound, lbound) in
+((:sup,:supremum,:inf,:infimum,:max,:typemin,:union,     "least upper bound",    "lower bound"),
+ (:inf,:infimum,:sup,:supremum,:min,:typemax,:intersect, "greatest lower bound", "upper bound"))
 
   global supstring = string(supremum)
   global infstring = string(infimum)
@@ -19,16 +19,17 @@ Calculate $ubound of `a` and `b`. If the type `promote_type(S,T)`
 has a canonical partial order (implements `<` but does not implement `isless`),
 the method must be overwritten for this type. If `isless` is defined, `$max` is called.
 """
-($supremum)(a::T, b::T) where {T<:Any} = ($max)(a, b)
-($supremum)(a::T, b::T) where {T<:Real} = ($max)(a, b)
-($supremum)(a::S, b::T) where {S<:Real,T<:Real} = ($max)(a, b)
-($supremum)(a::T, b::T) where {T<:AbstractString} = ($max)(a, b)
-($supremum)(a::S, b::T) where {S<:AbstractSet{U},T<:AbstractSet{U}} where U = ($union)(a, b)
-($supremum)(a::S, b::T) where {S<:AbstractArray,T<:AbstractArray} = ($union)(a, b)
+($sup)(a::T, b::T) where {T<:Any} = ($max)(a, b)
+($sup)(a::T, b::T) where {T<:Real} = ($max)(a, b)
+($sup)(a::S, b::T) where {S<:Real,T<:Real} = ($max)(a, b)
+($sup)(a::T, b::T) where {T<:AbstractString} = ($max)(a, b)
+($sup)(a::S, b::T) where {S<:AbstractSet,T<:AbstractSet} = ($union)(a, b)
+($sup)(a::S, b::T) where {S<:AbstractArray,T<:AbstractArray} = ($union)(a, b)
 
+$sup(x::Real) = x
 
 # This schould go to operators.jl:419
-    ($supremum)(a, b, c, xs...) = Base.afoldl(($supremum), ($supremum)(($supremum)(a,b), c), xs...) 
+    ($sup)(a, b, c, xs...) = Base.afoldl(($sup), ($sup)(($sup)(a,b), c), xs...) 
 
 """
     $supstring(itr)
@@ -36,7 +37,7 @@ the method must be overwritten for this type. If `isless` is defined, `$max` is 
 Calculate $ubound of the elements of collection `itr`.
 If itr is empty, return a $lbound of the appropriate type.
 """
-($supremum)(itr) = mapreduce(identity, ($supremum), itr)
+($supremum)(itr) = mapreduce(identity, ($sup), itr)
 
 """
     $supstring(f::Callable, itr)
@@ -49,7 +50,7 @@ If itr is empty, return a $lbound of the return type of `f`.
 ######
 # this is inspired by reduce.jl:243 ff
 # note that we do not enforce the return type of ($infimum)
-mr_empty(::typeof(identity), ::typeof(($supremum)), T) = ($infimum)(T)
+mr_empty(::typeof(identity), ::typeof(($sup)), T) = ($infimum)(T)
 
 # derive inferred return type 
 function mr_empty(f, op::typeof(($supremum)), T)
@@ -67,11 +68,11 @@ Calculate $lbound for all elements of type `T`.
 end # eval begin
 end # for
 
-inf(::Type{T}) where {T<:AbstractSet} = leaf_type(T)()
-inf(::Type{String}) = ""
+infimum(::Type{T}) where {T<:AbstractSet} = leaf_type(T)()
+infimum(::Type{String}) = ""
 
-sup(::Type{T}) where {T<:AbstractSet} = error("no upper bound defined (yet) for Set")
-sup(::Type{String}) = error("no upper bound defined for String")
+supremum(::Type{T}) where {T<:AbstractSet} = error("no upper bound defined (yet) for Set")
+supremum(::Type{String}) = error("no upper bound defined for String")
 
 """
   leaf_type(::Type) -> ::Type
@@ -86,8 +87,4 @@ leaf_type(::Type{T}) where {T<:Signed} = isleaftype(T) ? T : Int
 leaf_type(::Type{T}) where {T<:Unsigned} = isleaftype(T) ? T : UInt
 leaf_type(::Type{T}) where {T<:Integer} = isleaftype(T) ? T : Int
 leaf_type(::Type{T}) where {T<:Real} = isleaftype(T) ? T : Float64
-
-# aliases for the main functions
-const supremum = sup
-const infimum = inf
 
