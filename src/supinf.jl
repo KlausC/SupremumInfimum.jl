@@ -45,7 +45,7 @@ If itr is empty, return a $lbound of the appropriate type.
 Calculate $ubound of the elements of `f.(itr)`.
 If itr is empty, return a $lbound of the return type of `f`.
 """
-($supremum)(f::Callable, itr) = mapreduce(f, ($supremum), itr)
+($supremum)(f::Callable, itr) = mapreduce(f, ($sup), itr)
 
 ######
 # this is inspired by reduce.jl:243 ff

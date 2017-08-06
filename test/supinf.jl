@@ -56,6 +56,9 @@ end
   @test inf(E, A, Z) == Set{Float64}()
   @test inf(Z, A, E) == Set{Float64}()
 
+  @test supremum([E, A]) == Set([1.0, 2, 3])
+  @test supremum(x->-x, [E, A]) == Set([-1.0, -2, -3])
+
   end
 end
 @test infimum(Float64[]) == Inf # Note the names match!
