@@ -1,6 +1,6 @@
 ### part of package SupremumInfimum
 
-import Base:  Callable, mr_empty, union, intersect
+import Base:  Callable, reduce_empty, mapreduce_empty, union, intersect
 
 for (sup, supremum, inf, infimum, max, typemin, union, ubound, lbound) in
 ((:sup,:supremum,:inf,:infimum,:max,:typemin,:union,     "least upper bound",    "lower bound"),
@@ -50,10 +50,10 @@ If itr is empty, return a $lbound of the return type of `f`.
 ######
 # this is inspired by reduce.jl:243 ff
 # note that we do not enforce the return type of ($infimum)
-mr_empty(::typeof(identity), ::typeof(($sup)), T) = ($infimum)(T)
+reduce_empty(::typeof(($sup)), T) = ($infimum)(T)
 
 # derive inferred return type 
-function mr_empty(f, op::typeof(($supremum)), T)
+function mapreduce_empty(f, op::typeof(($supremum)), T)
   S = Core.Inference.return_type(f, (T,))
   ($infimum)(ifelse(S<:Union{}, Any, S))
 end
@@ -70,9 +70,11 @@ end # for
 
 infimum(::Type{T}) where {T<:AbstractSet} = leaf_type(T)()
 infimum(::Type{String}) = ""
+infimum(::Type{BigInt}) = IntInf
 
 supremum(::Type{T}) where {T<:AbstractSet} = error("no upper bound defined (yet) for Set")
 supremum(::Type{String}) = error("no upper bound defined for String")
+supremum(::Type{BigInt}) = IntSup
 
 """
   leaf_type(::Type) -> ::Type
@@ -80,11 +82,11 @@ supremum(::Type{String}) = error("no upper bound defined for String")
 Return a default concrete subtype of argument.
 """
 
-leaf_type(::Type{T}) where {T<:AbstractSet{U}} where {U<:Any} = isleaftype(T) ? T : Set{U} 
-leaf_type(::Type{T}) where {T<:AbstractArray{U,N}} where {U,N} = isleaftype(T) ? T : Array{U,N} 
-leaf_type(::Type{BigInt}) = error("lower/upper bounds not (yet) implemented for BigInt")
-leaf_type(::Type{T}) where {T<:Signed} = isleaftype(T) ? T : Int
-leaf_type(::Type{T}) where {T<:Unsigned} = isleaftype(T) ? T : UInt
-leaf_type(::Type{T}) where {T<:Integer} = isleaftype(T) ? T : Int
-leaf_type(::Type{T}) where {T<:Real} = isleaftype(T) ? T : Float64
+leaf_type(::Type{T}) where {T<:AbstractSet{U}} where {U<:Any} = isconcretetype(T) ? T : Set{U} 
+leaf_type(::Type{T}) where {T<:AbstractArray{U,N}} where {U,N} = isconcretetype(T) ? T : Array{U,N} 
+leaf_type(::Type{BigInt}) = BigInt
+leaf_type(::Type{T}) where {T<:Signed} = isconcretetype(T) ? T : Int
+leaf_type(::Type{T}) where {T<:Unsigned} = isconcretetype(T) ? T : UInt
+leaf_type(::Type{T}) where {T<:Integer} = isconcretetype(T) ? T : Int
+leaf_type(::Type{T}) where {T<:Real} = isconcretetype(T) ? T : Float64
 

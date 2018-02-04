@@ -7,9 +7,11 @@ module SupremumInfimum
 
 export supremum, infimum, sup, inf, leaf_type
 export is_ordered, is_partially_ordered, is_totally_ordered, is_iterable
+export IntSup, IntInf, typesup, typeinf
 
 include("supinf.jl")
 include("check.jl")
+include("limits.jl")
 
 end # module
 

@@ -1,5 +1,6 @@
 using SupremumInfimum
-using Base.Test
+using InteractiveUtils
+using Test
 
 # write your own tests here
 @test leaf_type(Int) == Int
@@ -10,11 +11,9 @@ using Base.Test
 
 @test supremum(Set{Int}[]) == Set{Int}()
 
-
-
 @testset "Real type $T basics" for T in [subtypes(AbstractFloat); subtypes(Signed); subtypes(Unsigned)]
-  
-  let  E = one(T), Z = zero(T), IP = typemax(T), IN = typemin(T)
+
+  let  E = one(T), Z = zero(T), IP = supremum(T), IN = infimum(T)
 
   @test supremum(T[]) == IN
   @test infimum(T[]) == IP # Inf - Note the names match!
@@ -57,12 +56,16 @@ end
   @test inf(Z, A, E) == Set{Float64}()
 
   @test supremum([E, A]) == Set([1.0, 2, 3])
-  @test supremum(x->-x, [E, A]) == Set([-1.0, -2, -3])
+  @test supremum(maximum, [E, A]) === 3.0
+  @test_throws ArgumentError supremum(maximum, [E, Z]) === 2.0
+  @test supremum(supremum, [E, Z]) === 2.0
+  @test supremum(length, [E, Z]) === 2
+  @test infimum(length, [E, Z]) === 0
 
   end
 end
 @test infimum(Float64[]) == Inf # Note the names match!
 @test supremum(Float64[]) == -Inf
-@test sup(IntSet([1,42]), IntSet([2,42])) == IntSet([1, 2, 42])
-@test inf(IntSet([1,42]), IntSet([2,42])) == IntSet([42])
+@test sup(BitSet([1,42]), BitSet([2,42])) == BitSet([1, 2, 42])
+@test inf(BitSet([1,42]), BitSet([2,42])) == BitSet([42])
 
